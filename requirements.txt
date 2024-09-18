@@ -1,0 +1,13 @@
+streamlit
+uuid
+pysqlite3-binary
+bs4
+langchain
+langchain-community
+langchain-core
+langchain-openai
+langchain-text-splitters
+langchain-chroma
+chromadb
+openai
+python-dotenv
