@@ -11,3 +11,4 @@ langchain-chroma
 chromadb
 openai
 python-dotenv
+lxml

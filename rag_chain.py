@@ -26,7 +26,7 @@ embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 
 
 vector_store = Chroma(
-    collection_name="RUNSPEC_ACTDIMS_to_CO2SOL",
+    collection_name="KEYWORDS",
     embedding_function=embeddings,
     persist_directory="./chroma_langchain_db",
 )
@@ -59,7 +59,7 @@ system_prompt = (
     "You are an assistant for question-answering tasks to support reservoir engineers for reservoir simulation. "
     "Use the following pieces of retrieved context to answer "
     "the question. If you don't know the answer, say that you "
-    "don't know. Keep the answer concise and to the point."
+    "don't know."
     "\n\n"
     "{context}"
 )
