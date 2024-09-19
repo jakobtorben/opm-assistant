@@ -6,14 +6,22 @@ st.title("OPM Assistant")
 
 conversational_rag_chain = create_conversational_rag_chain()
 
+# Function to start a new chat
+def start_new_chat():
+    st.session_state.messages = []
+    st.session_state.session_id = str(uuid.uuid4())
+
 # Initialize session_id
 if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
 
-
 # Initialize session state
 if "messages" not in st.session_state:
     st.session_state.messages = []
+
+# Add a "New Chat" button
+if st.button("Start New Chat"):
+    start_new_chat()
 
 # Display chat messages
 for message in st.session_state.messages:
