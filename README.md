@@ -23,12 +23,26 @@ This is a chatbot application that uses RAG (Retrieval-Augmented Generation) to 
 
 ## Running the App
 
+### Option 1: Local Setup
+
 1. Ensure your virtual environment is activated
-2. Run the Streamlit app:
+2. Run the Chainlit app:
    ```
-   streamlit run app.py
+   chainlit run app.py
    ```
 3. Open the provided URL in your web browser
+
+### Option 2: Docker Container
+
+1. Build the Docker image:
+   ```
+   docker build -t opm-assistant .
+   ```
+2. Run the Docker container:
+   ```
+   docker run -p 8501:8501 -e OPENAI_API_KEY=your_api_key_here opm-assistant
+   ```
+3. Open `http://localhost:8501` in your web browser
 
 ## Note
 
