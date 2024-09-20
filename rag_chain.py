@@ -34,44 +34,6 @@ vector_store = Chroma(
 retriever = vector_store.as_retriever()
 
 
-# Contextualize question with chat history
-contextualize_q_system_prompt = (
-    "Given a chat history and the latest user question "
-    "which might reference context in the chat history, "
-    "formulate a standalone question which can be understood "
-    "without the chat history. Do NOT answer the question, "
-    "just reformulate it if needed and otherwise return it as is."
-)
-contextualize_q_prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", contextualize_q_system_prompt),
-        MessagesPlaceholder("chat_history"),
-        ("human", "{input}"),
-    ]
-)
-history_aware_retriever = create_history_aware_retriever(
-    llm, retriever, contextualize_q_prompt
-)
-
-
-# Construct QA prompt from system prompt and chat history
-system_prompt = (
-    "You are an assistant for question-answering tasks to support reservoir engineers for reservoir simulation. "
-    "Use the following pieces of retrieved context to answer "
-    "the question. If you don't know the answer, say that you "
-    "don't know."
-    "\n\n"
-    "{context}"
-)
-qa_prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", system_prompt),
-        MessagesPlaceholder("chat_history"),
-        ("human", "{input}"),
-    ]
-)
-
-
 store = {}
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
@@ -82,7 +44,43 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
 
 
 def create_conversational_rag_chain():
+
+    # Construct QA prompt from system prompt and chat history
+    system_prompt = (
+        "You are an assistant for question-answering tasks to support reservoir engineers for reservoir simulation. "
+        "Use the following pieces of retrieved context to answer "
+        "the question."
+        "\n\n"
+        "{context}"
+    )
+
+    qa_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_prompt),
+            MessagesPlaceholder("chat_history"),
+            ("human", "{input}"),
+        ]
+    )
+
+    # Contextualize question with chat history
+    contextualize_q_system_prompt = (
+        "Given a chat history and the latest user question "
+        "which might reference context in the chat history, "
+        "formulate a standalone question which can be understood "
+        "without the chat history. Do NOT answer the question, "
+        "just reformulate it if needed and otherwise return it as is."
+    )
+    contextualize_q_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", contextualize_q_system_prompt),
+            MessagesPlaceholder("chat_history"),
+            ("human", "{input}"),
+        ]
+    )
+
     question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
+
+    history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
 
     rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
 
