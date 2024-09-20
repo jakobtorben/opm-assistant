@@ -1,4 +1,5 @@
 import chainlit as cl
+from process_file import process_file
 from rag_chain import create_conversational_rag_chain
 import uuid
 
@@ -11,7 +12,15 @@ def start():
 @cl.on_message
 async def main(message: cl.Message):
     session_id = cl.user_session.get("session_id")
-    
+
+    if message.elements:
+        print("File has been uploaded ")
+        for file in message.elements:
+            print("Processing file: ", file)
+            result = process_file(file)
+            if result.add_to_context:
+                message.content += f"\n\nContext from uploaded file: {result.content}"
+
     response = conversational_rag_chain.invoke(
         {"input": message.content},
         {"configurable": {"session_id": session_id}}
