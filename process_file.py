@@ -8,20 +8,16 @@ class FileProcessResult:
         self.content = content
 
 def process_file(file):
-    global additional_context
-
     file_extension = file.name.split('.')[-1].lower()
 
     if file_extension in ['data', 'dbg', 'inc', 'sch']:
-        with open(file.path, "r") as f:
-            content = f.read()
-
+        content = file.read().decode('utf-8')  # Read as text
         if file_extension == 'data':
             return FileProcessResult(add_to_context=True, content=content)
 
     elif file_extension == 'pdf':
         # Use PyPDFLoader to load the PDF
-        loader = PyPDFLoader(file.path)
+        loader = PyPDFLoader(file)
         pages = loader.load()
 
         # Split the text into chunks
