@@ -2,6 +2,7 @@ import streamlit as st
 from process_file import process_file
 from rag_chain import create_conversational_rag_chain
 import uuid
+from process_file import plot_sgwfn_data
 
 st.set_page_config(layout="centered", page_title="OPM Assistant", page_icon="opm_logo_compact.png")
 
@@ -18,6 +19,8 @@ if 'context_added' not in st.session_state:
     st.session_state.context_added = False
 if 'processed_files' not in st.session_state:
     st.session_state.processed_files = set()
+if 'data' not in st.session_state:
+    st.session_state.data = []
 
 def clear_chat():
     st.session_state.messages = []
@@ -31,7 +34,7 @@ if st.button("Clear Chat History and Context", on_click=clear_chat):
     st.success("Chat history and custom context cleared!")
 
 # File uploader
-uploaded_files = st.file_uploader("Upload a file", type=['data', 'dbg', 'inc', 'sch', 'pdf'], accept_multiple_files=True, label_visibility="collapsed")
+uploaded_files = st.file_uploader("Upload a file", type=['data', 'dbg', 'inc', 'sch', 'pdf', 'txt'], accept_multiple_files=True, label_visibility="collapsed")
 if uploaded_files:
     new_files_processed = False
     for uploaded_file in uploaded_files:
@@ -39,6 +42,8 @@ if uploaded_files:
             result = process_file(uploaded_file)
             if result.content:
                 st.session_state.custom_context.append(result.content)
+            if result.data:
+                 st.session_state.data.append(result.data)
             st.session_state.processed_files.add(uploaded_file.name)
             new_files_processed = True
     if new_files_processed:
@@ -82,6 +87,18 @@ if prompt := st.chat_input("How can I help you?"):
 for i, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+        
+        # Check if this is an assistant message
+        if message["role"] == "assistant":
+            # Check if the message contains "SGOF" and "plot"
+            if "SGWFN" in message["content"] and "plot" in message["content"]:
+                # Retrieve the SGOF data
+                recent_sgwfn_data = st.session_state.data[0]
+                if recent_sgwfn_data:
+                    fig = plot_sgwfn_data(recent_sgwfn_data)
+                    st.pyplot(fig)
+                else:
+                    st.warning("No SGOF data available to plot.")
         
         # Check if this is an assistant message and has context
         if message["role"] == "assistant" and "context" in st.session_state.get(f"message_{i}", {}):
