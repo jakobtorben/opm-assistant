@@ -1,6 +1,6 @@
+chainlit
 streamlit
 uuid
-pysqlite3-binary
 bs4
 langchain
 langchain-community
