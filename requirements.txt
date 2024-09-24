@@ -1,4 +1,3 @@
-chainlit
 streamlit
 uuid
 langchain
@@ -10,5 +9,6 @@ langchain-chroma
 chromadb
 openai
 python-dotenv
+pysqlite3-binary
 matplotlib
 lxml
