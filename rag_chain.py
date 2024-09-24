@@ -11,25 +11,6 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-openai_api_key = os.getenv("OPENAI_API_KEY")
-
-
-llm = ChatOpenAI(model="gpt-4o-mini-2024-07-18", temperature=0)
-embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
-
-
-vector_store = Chroma(
-    collection_name="KEYWORDS",
-    embedding_function=embeddings,
-    persist_directory="./chroma_langchain_db",
-)
-
-retriever = vector_store.as_retriever()
-
 
 store = {}
 
@@ -74,6 +55,18 @@ def create_conversational_rag_chain():
             ("human", "{input}"),
         ]
     )
+    
+    llm = ChatOpenAI(model="gpt-4o-mini-2024-07-18", temperature=0)
+    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+
+
+    vector_store = Chroma(
+        collection_name="KEYWORDS",
+        embedding_function=embeddings,
+        persist_directory="./chroma_langchain_db",
+    )
+
+    retriever = vector_store.as_retriever()
 
     question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
 

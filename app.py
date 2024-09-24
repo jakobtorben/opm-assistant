@@ -1,4 +1,6 @@
 import streamlit as st
+import os
+from dotenv import load_dotenv
 from process_file import process_file
 from rag_chain import create_conversational_rag_chain
 import uuid
@@ -6,7 +8,6 @@ from process_file import plot_sgwfn_data
 
 st.set_page_config(layout="centered", page_title="OPM Assistant", page_icon="opm_logo_compact.png")
 
-conversational_rag_chain = create_conversational_rag_chain()
 
 # Initialize session state
 if 'session_id' not in st.session_state:
@@ -29,27 +30,71 @@ def clear_chat():
     st.session_state.context_added = False
     st.session_state.processed_files.clear()
 
-# Add a button to clear the chat history and custom context
-if st.button("Clear Chat History and Context", on_click=clear_chat):
-    st.success("Chat history and custom context cleared!")
 
-# File uploader
-uploaded_files = st.file_uploader("Upload a file", type=['data', 'dbg', 'inc', 'sch', 'pdf', 'txt'], accept_multiple_files=True, label_visibility="collapsed")
-if uploaded_files:
-    new_files_processed = False
-    for uploaded_file in uploaded_files:
-        if uploaded_file.name not in st.session_state.processed_files:
-            result = process_file(uploaded_file)
-            if result.content:
-                st.session_state.custom_context.append(result.content)
-            if result.data:
-                 st.session_state.data.append(result.data)
-            st.session_state.processed_files.add(uploaded_file.name)
-            new_files_processed = True
-    if new_files_processed:
-        st.success("New file(s) processed successfully!")
-    st.session_state.context_added = False
+def check_openai_api_key_exist():
+    if 'OPENAI_API_KEY' not in os.environ:
+        st.error('Please provide your OpenAI API key in the sidebar.')
+        st.stop()
+
+
+def is_api_key_valid(api_key):
+    import openai
+    client = openai.OpenAI(api_key=api_key)
+    try:
+        client.models.list()
+    except openai.AuthenticationError as e:
+        return False
+    else:
+        return True
+
+
+with st.sidebar:
+    st.image('opm_logo.png')
     
+    # Add a button to clear the chat history and custom context
+    if st.button("Clear Chat History and Context", on_click=clear_chat):
+        st.success("Chat history and custom context cleared!")
+
+    # set the API key
+
+    # check if the API key is in the environment variables
+    load_dotenv()
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        api_key = st.text_input('Your OpenAI API Key:', type='password')
+        if api_key:
+            os.environ['OPENAI_API_KEY'] = api_key
+
+    # check if the API key is not valid
+    if api_key and not is_api_key_valid(api_key):
+        st.error('Invalid OpenAI API key. Please provide a valid key.')
+        st.stop()
+
+
+    # File uploader
+    uploaded_files = st.file_uploader("Upload a file", type=['data', 'inc', 'sch', 'pdf', 'txt'], accept_multiple_files=True, label_visibility="collapsed")
+    if uploaded_files:
+        new_files_processed = False
+        for uploaded_file in uploaded_files:
+            if uploaded_file.name not in st.session_state.processed_files:
+                result = process_file(uploaded_file)
+                if result.content:
+                    st.session_state.custom_context.append(result.content)
+                if result.data:
+                    st.session_state.data.append(result.data)
+                st.session_state.processed_files.add(uploaded_file.name)
+                new_files_processed = True
+        if new_files_processed:
+            st.success("New file(s) processed successfully!")
+        st.session_state.context_added = False
+
+# Only create the conversational RAG chain if a valid API key is provided
+if api_key and is_api_key_valid(api_key):
+    conversational_rag_chain = create_conversational_rag_chain()
+else:
+    conversational_rag_chain = None
+
+
 # Chat input
 if prompt := st.chat_input("How can I help you?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
