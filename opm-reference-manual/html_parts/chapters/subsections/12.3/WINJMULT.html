@@ -1,0 +1,556 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title>OPEN POROUS MEDIA</title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="author" content="David Baxendale"/>
+	<meta name="created" content="2023-05-18T17:05:55.227000000"/>
+	<meta name="changed" content="2023-12-12T11:43:26.423000000"/>
+	<meta name="classification" content="OPM Flow Reference Manual"/>
+	<meta name="description" content="To insert equations with numbing and correct Table layout type
+1) eq 
+2) F3
+
+To insert the above text box using the AutoText option:
+1. Start a new line.
+2. Type ntb and then press F3.
+3. The ntb is replaced by the above new text box.
+
+To insert a new keyword section (except for the header
+1) kw1 or kw2 or kw3
+2) F3
+
+To insert standard text:
+1) t0, t1, t2
+2) F3
+Updated with AFR/TSA Rev-D comments and new keywords."/>
+	<meta name="ClientContact" content="ClientContact"/>
+	<meta name="ClientEmail" content="ClientEmail"/>
+	<meta name="ClientName" content="Equinor ASA"/>
+	<meta name="ClientOffice" content="ClientOfficeAddres"/>
+	<meta name="ClientRegistered" content="ClientRegisteredAddress"/>
+	<meta name="ClientTelNo" content="ClientTelNo"/>
+	<meta name="DocumentDate" content="June 8, 2023"/>
+	<meta name="DocumentNumber" content="2023-04-RPT"/>
+	<meta name="DocumentRevision" content="Rev-0"/>
+	<meta name="ProgramVersion" content="2023-04"/>
+	<style type="text/css">
+		@page { size: 21.01cm 29.69cm; margin-left: 2cm; margin-right: 2cm; margin-top: 1.27cm; margin-bottom: 1.27cm }
+		@page:first { margin-left: 1.27cm; margin-right: 1.27cm }
+		p { margin-left: 1.4cm; margin-bottom: 0cm; direction: ltr; text-align: justify; orphans: 0; widows: 0; background: transparent; page-break-before: auto }
+		p.western { font-family: "Gill Sans MT", sans-serif; font-size: 10pt; font-weight: normal }
+		td p { margin-right: 0.2cm; margin-top: 0.08cm; margin-bottom: 0.08cm; direction: ltr; color: #000000; background: transparent; text-align: justify; orphans: 0; widows: 0; background: transparent; page-break-before: auto }
+		td p.western { font-family: "Gill Sans MT", sans-serif; font-size: 9pt; so-language: en-US; font-weight: normal }
+		td p.cjk { font-family: "Times New Roman"; font-size: 10pt; font-weight: bold }
+		td p.ctl { font-family: "Times New Roman"; font-size: 10pt; font-weight: bold }
+		th p { margin-left: 0.1cm; margin-right: 0.1cm; margin-top: 0.1cm; margin-bottom: 0.1cm; direction: ltr; text-transform: capitalize; color: #000000; background: transparent; text-align: center; orphans: 0; widows: 0; background: transparent; page-break-before: auto }
+		th p.western { font-family: "Gill Sans MT", sans-serif; font-size: 9pt; so-language: en-US; font-weight: bold }
+		th p.cjk { font-family: "Times New Roman"; font-size: 10pt; font-weight: bold }
+		th p.ctl { font-family: "Times New Roman"; font-size: 10pt; font-weight: bold }
+		h3 { margin-left: 1.4cm; text-indent: -1.4cm; margin-top: 0cm; margin-bottom: 0.25cm; direction: ltr; font-variant: small-caps; color: #579d1c; text-align: justify; orphans: 0; widows: 0; background: transparent; page-break-before: auto; page-break-after: avoid }
+		h3.western { font-family: "Liberation Sans", sans-serif; font-size: 14pt; font-weight: bold }
+		h3.cjk { font-family: "HG Mincho Light J"; font-size: 14pt; font-weight: bold }
+		h3.ctl { font-family: "Lucidasans"; font-size: 14pt; font-weight: bold }
+		h4 { margin-left: 1.4cm; margin-top: 0.25cm; margin-bottom: 0.25cm; direction: inherit; color: #579d1c; text-align: justify; orphans: 0; widows: 0; background: transparent; page-break-before: auto; page-break-after: avoid }
+		h4.western { font-family: "Liberation Sans", sans-serif; font-size: 12pt; so-language: en-US; font-weight: bold }
+		h4.cjk { font-family: "HG Mincho Light J"; font-size: 14pt }
+		h4.ctl { font-family: "Lucidasans"; font-size: 14pt }
+		p.@equationwherelist { margin-left: 3.81cm; line-height: 100%; text-align: left; orphans: 2; widows: 2 }
+		p.@equationwhere- { margin-left: 2.54cm; line-height: 100%; orphans: 2; widows: 2 }
+		td p.@textnote-western { color: #ffffff; font-size: 10pt; background: #579d1c }
+		td p.@textnote-cjk { color: #ffffff; background: #579d1c }
+		td p.@textnote-ctl { color: #ffffff; background: #579d1c }
+		p.@example-western { color: #800000; font-family: "Liberation Mono", monospace; font-size: 9pt; text-align: left }
+		p.@example-cjk { color: #800000; font-size: 9pt; text-align: left }
+		p.@example-ctl { color: #800000; font-size: 9pt; text-align: left }
+		p.@textbody { margin-bottom: 0.25cm; orphans: 2; widows: 2 }
+		a:link { color: #004586; text-decoration: none }
+		a.western:link { font-family: "Liberation Sans Narrow", sans-serif; font-size: 10pt; font-style: italic; font-weight: normal }
+		a:visited { color: #004586; background: transparent; text-decoration: underline }
+		a.western:visited { font-family: "Liberation Sans Narrow", sans-serif; font-size: 10pt; font-style: italic; font-weight: normal }
+		a.cjk:visited { so-language: zxx }
+		a.ctl:visited { so-language: zxx }
+		a.sdfootnotesym-western { color: #008080; font-family: "Cabin", sans-serif; font-size: 8pt; font-style: italic; background: transparent }
+		a.sdfootnotesym-cjk { color: #008080; background: transparent }
+		a.sdfootnotesym-ctl { color: #008080; background: transparent }
+		a.sdendnotesym-western { font-family: "Gill Sans MT", sans-serif; font-size: 10pt; background: transparent }
+		a.sdendnotesym-cjk { background: transparent }
+		a.sdendnotesym-ctl { background: transparent }
+	</style>
+</head>
+<body lang="en-US" link="#004586" vlink="#004586" background="data:image/jpeg;base64,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" dir="ltr" style="border: 1.50pt solid #579d1c; padding: 0.05cm"><p class="western" style="font-weight: normal">
+<br/>
+
+</p>
+<div id="WINJMULT" dir="ltr"><h3 class="western" style="page-break-before: always">
+	12.3.296WINJMULT – Define Well Pressure Dependent Injectivity
+	Multipliers 
+	</h3>
+	<dl>
+		<dd>
+		<table width="588" cellpadding="2" cellspacing="0" style="background: transparent; page-break-after: avoid">
+			<col width="68"/>
+
+			<col width="69"/>
+
+			<col width="69"/>
+
+			<col width="69"/>
+
+			<col width="68"/>
+
+			<col width="71"/>
+
+			<col width="69"/>
+
+			<col width="68"/>
+
+			<tr style="background: transparent" valign="top">
+				<td width="68" bgcolor="#eeeeee" style="background: #eeeeee" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.05cm; padding-right: 0cm"><p class="western">
+					<a class="western" href="#3.RUNSPEC SECTION|outline"><span lang="en-US">RUNSPEC</span></a></p>
+				</td>
+				<td width="69" bgcolor="#eeeeee" style="background: #eeeeee" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.05cm; padding-right: 0cm"><p class="western">
+					<a class="western" href="#4.GRID SECTION|outline"><span lang="en-US">GRID</span></a></p>
+				</td>
+				<td width="69" bgcolor="#eeeeee" style="background: #eeeeee" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.05cm; padding-right: 0cm"><p class="western">
+					<a class="western" href="#5.EDIT SECTION|outline"><span lang="en-US">EDIT</span></a></p>
+				</td>
+				<td width="69" bgcolor="#eeeeee" style="background: #eeeeee" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.05cm; padding-right: 0cm"><p class="western">
+					<a class="western" href="#6.PROPS SECTION|outline"><span lang="en-US">PROPS</span></a></p>
+				</td>
+				<td width="68" bgcolor="#eeeeee" style="background: #eeeeee" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.05cm; padding-right: 0cm"><p class="western">
+					<a class="western" href="#7.REGIONS SECTION|outline"><span lang="en-US">REGIONS</span></a></p>
+				</td>
+				<td width="71" bgcolor="#eeeeee" style="background: #eeeeee" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.05cm; padding-right: 0cm"><p class="western">
+					<a class="western" href="#8.SOLUTION SECTION|outline"><span lang="en-US">SOLUTION</span></a></p>
+				</td>
+				<td width="69" bgcolor="#eeeeee" style="background: #eeeeee" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.05cm; padding-right: 0cm"><p class="western">
+					<a class="western" href="#9.SUMMARY SECTION|outline"><span lang="en-US">SUMMARY</span></a></p>
+				</td>
+				<td width="68" bgcolor="#579d1c" style="background: #579d1c" style="border: 1px solid #000000; padding: 0.1cm 0.05cm"><p class="western">
+					<a class="western" href="#10.SCHEDULE SECTION|outline"><span lang="en-US">SCHEDULE</span></a></p>
+				</td>
+			</tr>
+		</table>
+	</dl>
+	<h4 class="western"><a name="__RefHeading___Toc14509_37011683881612111111"></a>
+	Description</h4>
+	<p class="@textbody">The WINJMULT keyword defines pressure dependent
+	injectivity multipliers for injection wells and can be used to
+	approximate the increase or decrease in a well’s injectivity due
+	to hydraulic fracturing in water injection wells. Only injection
+	wells are processed by this keyword, even if production wells have
+	been entered by the keyword.</p>
+	<dl>
+		<dd>
+		<table width="588" cellpadding="4" cellspacing="0" style="background: transparent; page-break-after: auto">
+			<col width="39"/>
+
+			<col width="79"/>
+
+			<col width="118"/>
+
+			<col width="118"/>
+
+			<col width="118"/>
+
+			<col width="66"/>
+
+			<thead>
+				<tr valign="top">
+					<th rowspan="2" width="39" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western">
+						No.</p>
+					</th>
+					<th rowspan="2" width="79" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western">
+						Name</p>
+					</th>
+					<th colspan="3" width="370" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western">
+						Description</p>
+					</th>
+					<th rowspan="2" width="66" style="border: 1px solid #000000; padding: 0.1cm"><p class="western">
+						Default</p>
+					</th>
+				</tr>
+				<tr valign="top">
+					<th width="118" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western">
+						Field</p>
+					</th>
+					<th width="118" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western">
+						Metric</p>
+					</th>
+					<th width="118" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western">
+						Laboratory</p>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr style="background: transparent" valign="top">
+					<td width="39" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						1</p>
+					</td>
+					<td width="79" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						WELNAME</p>
+					</td>
+					<td colspan="3" width="370" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" style="orphans: 0; widows: 0; background: transparent">
+						A character string of up to eight characters in length that
+						defines the well name for which the well connection data are
+						being defined.</p>
+						<p class="western" style="orphans: 0; widows: 0; background: transparent">
+						Note that the well name (WELNAME) must have been declared
+						previously using the WELSPECS keyword in the SCHEDULE section,
+						otherwise an error may occur.</p>
+					</td>
+					<td width="66" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm"><p class="western" align="center">
+						None</p>
+					</td>
+				</tr>
+				<tr style="background: transparent" valign="top">
+					<td rowspan="2" width="39" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						2</p>
+					</td>
+					<td rowspan="2" width="79" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						FRACPRES</p>
+					</td>
+					<td colspan="3" width="370" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" style="orphans: 0; widows: 0; background: transparent">
+						FRACPRES is the fracture opening pressure (Pfractue) used in
+						equation <span style="background: #c0c0c0">12.3.296.1</span>. 
+						</p>
+					</td>
+					<td rowspan="2" width="66" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm"><p class="western" align="center">
+						None</p>
+					</td>
+				</tr>
+				<tr style="background: transparent" valign="top">
+					<td width="118" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						psia</p>
+					</td>
+					<td width="118" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						barsa</p>
+					</td>
+					<td width="118" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						atma</p>
+					</td>
+				</tr>
+				<tr style="background: transparent">
+					<td rowspan="2" width="39" valign="top" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						3</p>
+					</td>
+					<td rowspan="2" width="79" valign="top" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="font-weight: normal; orphans: 0; widows: 0; background: transparent">
+						<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">ALPHA</span></font></font></font></p>
+					</td>
+					<td colspan="3" width="370" valign="top" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" style="orphans: 0; widows: 0; background: transparent">
+						<font face="Gill Sans MT, sans-serif">ALPHA is the multiplier
+						</font>gradient<font face="Gill Sans MT, sans-serif">, </font><font face="Gill Sans MT, sans-serif"><i>α</i></font><font face="Gill Sans MT, sans-serif">,
+						</font>i<font face="Gill Sans MT, sans-serif">n </font>equation
+						<span style="background: #c0c0c0">12.3.296.1</span>.</p>
+					</td>
+					<td rowspan="2" width="66" valign="bottom" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm"><p class="western" align="center">
+						Defined</p>
+					</td>
+				</tr>
+				<tr style="background: transparent">
+					<td width="118" valign="top" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						1/psia</p>
+						<p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						0.0</p>
+					</td>
+					<td width="118" valign="top" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						1/barsa</p>
+						<p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						0.0</p>
+					</td>
+					<td width="118" valign="top" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						1/atma</p>
+						<p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						0.0</p>
+					</td>
+				</tr>
+				<tr style="background: transparent" valign="top">
+					<td width="39" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						4</p>
+					</td>
+					<td width="79" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="font-weight: normal; orphans: 0; widows: 0; background: transparent">
+						<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">OPTION</span></font></font></font></p>
+					</td>
+					<td colspan="3" width="370" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						A defined character string that determines how the data on this
+						keyword is applied, and should be set to one of the following
+						character strings:</p>
+						<ol>
+							<li value="1"><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+							CIRR: The injectivity multiplier as applied to the selected
+							connections (I, J, K) is <u>irreversibl</u>e, and the pressure
+							at the <u>connection</u><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><u><span style="font-weight: normal"><span style="background: transparent">’</span></span></u></font></font></font><u>s
+							sand face</u> (Pwbhp) is used in equation <span style="background: #c0c0c0">12.3.296.1</span>,
+							<font face="Gill Sans MT, sans-serif">instead of the </font>well’s
+							<font face="Gill Sans MT, sans-serif">flowing bottom-hole
+							pressure</font>. 
+							</p>
+						</ol>
+						<p class="western" align="justify" style="margin-left: 0.72cm; orphans: 0; widows: 0; background: transparent">
+						This option means that even if the pressures in the wellbore,
+						and therefore the sand face pressures, later declines,
+						injectivity remains unchanged for all the connections.</p>
+						<ol start="2">
+							<li><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+							<font face="Gill Sans MT, sans-serif">CREV: </font>The<font face="Gill Sans MT, sans-serif">
+							injectivity multiplier as applied to the selected connections
+							(I, J, K) </font>is<font face="Gill Sans MT, sans-serif">
+							</font><font face="Gill Sans MT, sans-serif"><u>reversible</u></font><font face="Gill Sans MT, sans-serif"><span style="text-decoration: none">,
+							</span></font>and t<font face="Gill Sans MT, sans-serif">he
+							pressure at the </font><font face="Gill Sans MT, sans-serif"><u>connection</u></font><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><u><span style="font-weight: normal"><span style="background: transparent">’</span></span></u></font></font></font><font face="Gill Sans MT, sans-serif"><u>s
+							sand face</u></font><font face="Gill Sans MT, sans-serif"> is
+							used in equation </font><span style="background: #c0c0c0">12.3.296.1</span>,
+														</p>
+						</ol>
+						<p class="western" align="justify" style="margin-left: 0.72cm; orphans: 0; widows: 0; background: transparent">
+						<font face="Gill Sans MT, sans-serif">The </font><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">reversibility</span></span></font></font></font><font face="Gill Sans MT, sans-serif">
+						of this option means </font>that<font face="Gill Sans MT, sans-serif">
+						if the pressures in the wellbore, and </font><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">therefore</span></span></font></font></font><font face="Gill Sans MT, sans-serif">
+						the sand face pressures, </font>later <font face="Gill Sans MT, sans-serif">decline</font>s<font face="Gill Sans MT, sans-serif">,
+						injectivity </font><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">will
+						also decline for </span></span></font></font></font><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><u><span style="font-weight: normal"><span style="background: transparent">al</span></span></u></font></font></font><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">l
+						</span></span></font></font></font>the <font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">connections.</span></span></font></font></font></p>
+						<ol start="3">
+							<li><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+							<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">WREV:
+							</span></span></font></font></font>The injectivity multiplier
+							as applied to all connections in the well<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">
+							</span></span></font></font></font>is reversible<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">,
+							</span></span></font></font></font>and<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">
+							the wells’ </span></span></font></font></font><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><u><span style="font-weight: normal"><span style="background: transparent">flowing
+							bottom-hole pressure</span></span></u></font></font></font><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">
+							(</span></span></font></font></font><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><i><span style="font-weight: normal"><span style="background: transparent">P</span></span></i></font></font></font><font color="#000000"><sub><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><i><span style="font-weight: normal"><span style="background: transparent">wbhp</span></span></i></font></font></sub></font><font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">)
+							is used in </span></span></font></font></font>equation<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">
+							</span></span></font></font></font><span style="background: #c0c0c0">12.3.296.1</span>,
+							<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">instead
+							of the pressure at the connection’s sand face. </span></span></font></font></font>The<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">
+							connections stipulated </span></span></font></font></font>by<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">
+							(I, J, K) are ignored. </span></span></font></font></font>
+							</p>
+						</ol>
+						<p class="western" align="justify" style="margin-left: 0.72cm; orphans: 0; widows: 0; background: transparent">
+						The reversibility of this option means <font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">that</span></span></font></font></font>
+						if the pressures in the wellbore, <font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">later
+						</span></span></font></font></font>decline<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">s</span></span></font></font></font>,
+						injectivity will also decline for all <font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="font-weight: normal"><span style="background: transparent">the
+						</span></span></font></font></font>connections.</p>
+					</td>
+					<td width="66" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm"><p class="western" align="center">
+						WREV</p>
+					</td>
+				</tr>
+				<tr style="background: transparent" valign="top">
+					<td width="39" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						5</p>
+					</td>
+					<td width="79" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						I</p>
+					</td>
+					<td colspan="3" width="370" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						An integer value less than or equal to NX that defines the
+						connection location in the I-direction.</p>
+						<p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						If set to zero, a negative value, or defaulted with 1* then all
+						connections in the I-direction will be multiplied by ALPHA,
+						depending on the selected OPTION value.</p>
+					</td>
+					<td width="66" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm"><p class="western" align="center" style="font-weight: normal; orphans: 0; widows: 0; background: transparent">
+						<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">1*</span></font></font></font></p>
+					</td>
+				</tr>
+				<tr style="background: transparent" valign="top">
+					<td width="39" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						6</p>
+					</td>
+					<td width="79" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						J</p>
+						<p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						<br/>
+
+						</p>
+					</td>
+					<td colspan="3" width="370" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						An integer value less than or equal to NY that defines the
+						connection location in the J-direction.</p>
+						<p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						If set to zero, a negative value, or defaulted with 1* then all
+						connections in the J-direction will be multiplied by ALPHA,
+						depending on the selected OPTION value.</p>
+					</td>
+					<td width="66" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm"><p class="western" align="center" style="font-weight: normal; orphans: 0; widows: 0; background: transparent">
+						<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">1*</span></font></font></font></p>
+					</td>
+				</tr>
+				<tr style="background: transparent" valign="top">
+					<td width="39" style="background: transparent" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="center" style="orphans: 0; widows: 0; background: transparent">
+						7</p>
+					</td>
+					<td width="79" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						K</p>
+					</td>
+					<td colspan="3" width="370" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm"><p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						An integer value less than or equal to NZ that defines the
+						connection location in the K-direction.</p>
+						<p class="western" align="justify" style="orphans: 0; widows: 0; background: transparent">
+						If set to zero, a negative value, or defaulted with 1* then all
+						connections in the K-direction will be multiplied by ALPHA,
+						depending on the selected OPTION value.</p>
+					</td>
+					<td width="66" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm"><p class="western" align="center" style="font-weight: normal; orphans: 0; widows: 0; background: transparent">
+						<font color="#000000"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 9pt"><span style="background: transparent">1*</span></font></font></font></p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="6" width="578" valign="top" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm"><p class="western" align="left">
+						<u><b>Notes:</b></u></p>
+						<ol>
+							<li value="1"><p class="western" align="left">The keyword is
+							followed by any number of records.</p>
+							<li><p class="western" align="left">Each record is terminated
+							by a “/” and the keyword should be terminated by a “/”.</p>
+						</ol>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</dl>
+	<p align="center" style="font-weight: normal"><i>Table <span style="background: #c0c0c0">12.3.296.1</span>:
+	WINJMULT Keyword Description</i></p>
+	<p class="@textbody"><br/>
+<br/>
+
+	</p>
+	<p class="western" style="font-weight: normal">The <font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 10pt">methodology</font></font>
+	for <font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 10pt">applying</font></font>
+	the <font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 10pt">well
+	pressure dependent injectivity multipliers is outlined in equation
+	</font></font><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 10pt"><span style="background: #c0c0c0">12.3.296.1</span></font></font><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 10pt">.</font></font></p>
+	<div align="right">
+		<table width="589" cellpadding="4" cellspacing="0">
+			<col width="510"/>
+
+			<col width="63"/>
+
+			<thead>
+				<tr>
+					<td width="510" style="border: none; padding: 0cm"><p class="western" align="center">
+						<img src="WINJMULT_html_e82d7ad2a03500d5.gif" name="Object258" align="absmiddle" hspace="2" width="348" height="36"/>
+</p>
+					</td>
+					<td width="63" style="border: none; padding: 0cm"><p align="right" style="margin-left: 0cm; orphans: 2; widows: 2">
+						<font color="#004586"><font size="2" style="font-size: 9pt"><b>(<span style="background: #c0c0c0">12.3.296.1</span>)</b></font></font></p>
+					</td>
+				</tr>
+			</thead>
+		</table>
+	</div>
+	<p class="@equationwhere-">where:</p>
+	<p class="@equationwherelist"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 10pt"><i>Multiplier</i></font></font>	=	the
+	resulting multiplier to be applied to the selected connections.</p>
+	<p class="@equationwherelist"><font face="Gill Sans MT, sans-serif"><i>α</i></font><font face="Gill Sans MT, sans-serif">	=
+		the ALPHA multiplier </font>gradient<font face="Gill Sans MT, sans-serif">
+	</font>in <span style="background: #c0c0c0">Table 12.3.296.1</span>.</p>
+	<p class="@equationwherelist"><font face="Gill Sans MT, sans-serif"><i>P</i></font><sub><font face="Gill Sans MT, sans-serif"><i>WBHP</i></font></sub><font face="Gill Sans MT, sans-serif">	=	either
+	the well</font><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 10pt">’s
+	current flowing bottom-hole pressure, or the selected</font></font></p>
+	<p class="@equationwherelist"><font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 10pt">		individual
+	</font></font>connection’s sand face pressure.<font face="Gill Sans MT, sans-serif"><font size="2" style="font-size: 10pt">
+	</font></font>
+	</p>
+	<p class="@equationwherelist"><i>P</i><sub><i>fracture</i></sub>	= 
+		the effective fracture opening pressure, FRACPRES in <span style="background: #c0c0c0">Table 12.3.296.1</span>.</p>
+	<p class="@textbody"><br/>
+<br/>
+
+	</p>
+	<p class="@textbody">The equation is applied every time there is a
+	calculation to determine a well’s flow rate, this results in the
+	calculated mobility rates being scaled up by the Multiplier value in
+	equation <span style="background: #c0c0c0">12.3.296.1</span>. Note
+	also that since the scaling is performed on the connection fluid
+	mobility values, then the reported connection transmissibilities in
+	the print file etc. remain unchanged.</p>
+	<p class="western" style="font-weight: normal"><br/>
+
+	</p>
+	<div align="right">
+		<table width="589" cellpadding="4" cellspacing="0" style="background: transparent; page-break-inside: avoid">
+			<col width="579"/>
+
+			<thead>
+				<tr style="background: transparent">
+					<td width="579" valign="top" bgcolor="#ff950e" style="background: #ff950e" style="border: 1px solid #000000; padding: 0.1cm"><p class="@textnote-western" align="center" style="background: transparent">
+						<font color="#000000"><u><b>Note</b></u></font></p>
+						<p class="@textnote-western" style="font-weight: normal; background: transparent">
+						<font color="#000000">If all the connection parameters (I, J,
+						K) are defaulted, or OPTION is set equal to WREV, then the
+						multiplier is applied to all connections in the well.</font></p>
+						<p class="@textnote-western" style="background: transparent"><font color="#000000">If
+						any of the connection parameters (I, J, K) have positive values
+						and OPTION is set equal to CIRR or CREV, then the multiplier is
+						applied to the selected connections as determined by the (I, J,
+						K) parameters.</font></p>
+					</td>
+				</tr>
+			</thead>
+		</table>
+	</div>
+	<p class="@textbody" style="margin-left: 0cm"><br/>
+<br/>
+
+	</p>
+	<h4 class="western">Example</h4>
+	<p class="@textbody">The example below show the WINJMULT keyword for
+	three water injection wells.</p>
+	<p class="@example-western">--</p>
+	<p class="@example-western">--       DEFINE WELL CONNECTION
+	MULTIPLIERS                                                  
+	</p>
+	<p class="@example-western">--                                      
+	                                       
+	</p>
+	<p class="@example-western">-- WELL  FRAC  MULT    FRAC 
+	--LOCATION--                     
+	</p>
+	<p class="@example-western">-- NAME  PRES  VALUE   OPTN    I   J   K
+	                    
+	</p>
+	<p class="@example-western">WINJMULT                                
+	               
+	</p>
+	<p class="@example-western">WI01     4200  0.0250  1*      1*  1* 
+	1*        /</p>
+	<p class="@example-western">WI02     4250  0.0025  CIRR    1*  1*
+	145        /</p>
+	<p class="@example-western">WI02     4250  0.0025  CIRR    1*  1*
+	146        /</p>
+	<p class="@example-western">WI02     4250  0.0025  CIRR    1*  1*
+	147        /</p>
+	<p class="@example-western">WI03     4400  0.0055  CREV    1*  1*
+	160        /</p>
+	<p class="@example-western">WI03     4400  0.0055  CREV    1*  1*
+	165        /</p>
+	<p class="@example-western">/                                       
+	                                       
+	</p>
+	<p class="@textbody"><br/>
+<br/>
+
+	</p>
+	<p class="@textbody">The first well, WI01, uses the default value
+	for OPTION, that is WREV, which means that the injectivity
+	multiplier will be applied to all the connections in the well and
+	the well’s bottom-hole pressure is used in the calculation. In
+	this case the process is reversible. The second well, WI02, applies
+	the injectivity multiplier to all connections in layers 145 to 147
+	using the sand face pressures in the calculation, and the process is
+	irreversible. Finally for well WI03, the multiplier is applied to
+	all connections in layers 160 and 165 using the sand face pressures
+	in the calculation, and in this case the process is reversible.     
+	                    
+	</p>
+</div>
+</body>
+</html>
