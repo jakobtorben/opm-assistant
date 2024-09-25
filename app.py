@@ -22,6 +22,8 @@ if 'processed_files' not in st.session_state:
     st.session_state.processed_files = set()
 if 'data' not in st.session_state:
     st.session_state.data = []
+if 'api_key' not in st.session_state:
+    st.session_state.api_key = None
 
 def clear_chat():
     st.session_state.messages = []
@@ -29,13 +31,6 @@ def clear_chat():
     st.session_state.custom_context = []
     st.session_state.context_added = False
     st.session_state.processed_files.clear()
-
-
-def check_openai_api_key_exist():
-    if 'OPENAI_API_KEY' not in os.environ:
-        st.error('Please provide your OpenAI API key in the sidebar.')
-        st.stop()
-
 
 def is_api_key_valid(api_key):
     import openai
@@ -63,17 +58,14 @@ with st.sidebar:
     )
 
     # set the API key
-
-    # check if the API key is in the environment variables
+    # check if the API key is in the environment variables (for local testing)
     load_dotenv()
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        api_key = st.text_input('Your OpenAI API Key:', type='password')
-        if api_key:
-            os.environ['OPENAI_API_KEY'] = api_key
+    st.session_state.api_key = os.getenv("OPENAI_API_KEY")
+    if not st.session_state.api_key:
+        st.session_state.api_key = st.text_input('Your OpenAI API Key:', type='password')
 
-    # check if the API key is not valid
-    if api_key and not is_api_key_valid(api_key):
+    # check if the API key valid
+    if st.session_state.api_key and not is_api_key_valid(st.session_state.api_key):
         st.error('Invalid OpenAI API key. Please provide a valid key.')
         st.stop()
 
@@ -96,8 +88,8 @@ with st.sidebar:
         st.session_state.context_added = False
 
 # Only create the conversational RAG chain if a valid API key is provided
-if api_key and is_api_key_valid(api_key):
-    conversational_rag_chain = create_conversational_rag_chain(model=model)
+if st.session_state.api_key and is_api_key_valid(st.session_state.api_key):
+    conversational_rag_chain = create_conversational_rag_chain(model=model, api_key=st.session_state.api_key)
 else:
     conversational_rag_chain = None
 

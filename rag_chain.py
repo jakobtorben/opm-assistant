@@ -21,7 +21,7 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
 
 
 
-def create_conversational_rag_chain(model):
+def create_conversational_rag_chain(model, api_key):
 
     # Construct QA prompt from system prompt and chat history
     system_prompt = (
@@ -56,8 +56,8 @@ def create_conversational_rag_chain(model):
         ]
     )
     
-    llm = ChatOpenAI(model=model, temperature=0)
-    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+    llm = ChatOpenAI(model=model, temperature=0, api_key=api_key)
+    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002", api_key=api_key)
 
 
     vector_store = Chroma(
