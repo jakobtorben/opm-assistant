@@ -87,12 +87,6 @@ with st.sidebar:
             st.success("New file(s) processed successfully!")
         st.session_state.context_added = False
 
-# Only create the conversational RAG chain if a valid API key is provided
-if st.session_state.api_key and is_api_key_valid(st.session_state.api_key):
-    conversational_rag_chain = create_conversational_rag_chain(model=model, api_key=st.session_state.api_key)
-else:
-    conversational_rag_chain = None
-
 # Display the entire chat history
 for i, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"]):
@@ -151,6 +145,12 @@ for i, message in enumerate(st.session_state.messages):
 
 # Chat input
 if prompt := st.chat_input("How can I help you?"):
+    if not st.session_state.api_key:
+        st.info("Please add your OpenAI API key in the sidebar to continue.")
+        st.stop()
+
+    conversational_rag_chain = create_conversational_rag_chain(model=model, api_key=st.session_state.api_key)
+
     # Display the user's message immediately
     with st.chat_message("user"):
         st.markdown(prompt)
