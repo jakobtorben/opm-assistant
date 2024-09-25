@@ -24,6 +24,10 @@ if 'data' not in st.session_state:
     st.session_state.data = []
 if 'api_key' not in st.session_state:
     st.session_state.api_key = None
+if "file_uploader_key" not in st.session_state:
+    st.session_state["file_uploader_key"] = 0
+if "uploaded_files" not in st.session_state:
+    st.session_state["uploaded_files"] = []
 
 def clear_chat():
     st.session_state.messages = []
@@ -31,6 +35,10 @@ def clear_chat():
     st.session_state.custom_context = []
     st.session_state.context_added = False
     st.session_state.processed_files.clear()
+    st.session_state.data = []
+    st.session_state["uploaded_files"] = []
+    st.session_state["file_uploader_key"] += 1
+
 
 def is_api_key_valid(api_key):
     import openai
@@ -71,7 +79,11 @@ with st.sidebar:
 
 
     # File uploader
-    uploaded_files = st.file_uploader("Upload a file", type=['data', 'inc', 'sch', 'pdf', 'txt'], accept_multiple_files=True, label_visibility="collapsed")
+    uploaded_files = st.file_uploader("Upload a file",
+                                      type=['data', 'inc', 'sch', 'pdf', 'txt'],
+                                      accept_multiple_files=True,
+                                      label_visibility="collapsed",
+                                      key=st.session_state["file_uploader_key"])
     if uploaded_files:
         new_files_processed = False
         for uploaded_file in uploaded_files:
