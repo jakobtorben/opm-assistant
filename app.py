@@ -50,7 +50,7 @@ def is_api_key_valid(api_key):
 
 with st.sidebar:
     st.image('opm_logo.png')
-    
+
     # Add a button to clear the chat history and custom context
     if st.button("Clear Chat History and Context", on_click=clear_chat):
         st.success("Chat history and custom context cleared!")
@@ -101,25 +101,87 @@ if api_key and is_api_key_valid(api_key):
 else:
     conversational_rag_chain = None
 
+# Display the entire chat history
+for i, message in enumerate(st.session_state.messages):
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+    # Check if this is an assistant message
+    if message["role"] == "assistant":
+        # Check if the message contains "SGOF" and "plot"
+        if "SGWFN" in message["content"] and "plot" in message["content"]:
+            # Retrieve the SGOF data
+            recent_sgwfn_data = st.session_state.data[0]
+            if recent_sgwfn_data:
+                fig = plot_sgwfn_data(recent_sgwfn_data)
+                st.pyplot(fig)
+            else:
+                st.warning("No SGWFN data available to plot.")
+
+    # Check if this is an assistant message and has context
+    if message["role"] == "assistant" and "context" in st.session_state.get(f"message_{i}", {}):
+        context = st.session_state[f"message_{i}"]["context"]
+        unique_docs = {doc.metadata.get('title', f'Document {j+1}'): doc for j, doc in enumerate(context)}
+
+        # Create a horizontal layout for buttons
+        cols = st.columns(len(unique_docs))
+        for j, (title, doc) in enumerate(unique_docs.items()):
+            with cols[j]:
+                if st.button(f"{title}", key=f"doc_button_{i}_{j}"):
+                    # Clear previous selections
+                    for k in range(len(unique_docs)):
+                        if k != j:
+                            st.session_state[f"show_doc_{i}_{k}"] = False
+                    # Set current selection
+                    st.session_state[f"show_doc_{i}_{j}"] = True
+
+    # Display HTML content if the corresponding button was clicked
+    if message["role"] == "assistant" and "context" in st.session_state.get(f"message_{i}", {}):
+        for j, (title, doc) in enumerate(unique_docs.items()):
+            if st.session_state.get(f"show_doc_{i}_{j}", False):
+                html_file_path = doc.metadata.get('source', '')
+
+                if html_file_path:
+                    # Ensure the path is relative to the current working directory
+                    if not html_file_path.startswith('opm-reference-manual'):
+                        # remove everything before 'opm-reference-manual'
+                        html_file_path = 'opm-reference-manual' + html_file_path.split('opm-reference-manual')[1]
+                    try:
+                        with open(html_file_path, 'r', encoding='utf-8') as file:
+                            html_content = file.read()
+                        #st.components.v1.html(html_content, height=600, width=800, scrolling=True)
+                        st.html(html_content)
+                    except FileNotFoundError:
+                        st.error(f"HTML file not found: {html_file_path}")
+                else:
+                    st.error("Source file path not available for this document.")
 
 # Chat input
 if prompt := st.chat_input("How can I help you?"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    # Display the user's message immediately
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Add the message to the session state
+    message = {"role": "user", "content": prompt}
+    st.session_state.messages.append(message)
 
     # Print the prompt for debugging
     print(f"User prompt: {prompt}")
-    
+
     # Add custom context to the prompt only if it hasn't been added before
     if not st.session_state.context_added:
         custom_context = "\n".join(st.session_state.custom_context)
         prompt = f"{custom_context}\n\n{prompt}"
         st.session_state.context_added = True
 
-    # Invoke the conversational RAG chain
-    response = conversational_rag_chain.invoke(
-        {"input": prompt},
-        {"configurable": {"session_id": st.session_state.session_id}}
-    )
+    # Show a loading spinner while waiting for the response
+    with st.spinner("Thinking..."):
+        # Invoke the conversational RAG chain
+        response = conversational_rag_chain.invoke(
+            {"input": prompt},
+            {"configurable": {"session_id": st.session_state.session_id}}
+        )
 
     full_response = response['answer']
     context = response.get('context', [])
@@ -135,57 +197,9 @@ if prompt := st.chat_input("How can I help you?"):
     }
     st.session_state.messages.append({"role": "assistant", "content": full_response})
 
-# Display chat history
-for i, message in enumerate(st.session_state.messages):
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-        
-        # Check if this is an assistant message
-        if message["role"] == "assistant":
-            # Check if the message contains "SGOF" and "plot"
-            if "SGWFN" in message["content"] and "plot" in message["content"]:
-                # Retrieve the SGOF data
-                recent_sgwfn_data = st.session_state.data[0]
-                if recent_sgwfn_data:
-                    fig = plot_sgwfn_data(recent_sgwfn_data)
-                    st.pyplot(fig)
-                else:
-                    st.warning("No SGOF data available to plot.")
-        
-        # Check if this is an assistant message and has context
-        if message["role"] == "assistant" and "context" in st.session_state.get(f"message_{i}", {}):
-            context = st.session_state[f"message_{i}"]["context"]
-            unique_docs = {doc.metadata.get('title', f'Document {j+1}'): doc for j, doc in enumerate(context)}
-            
-            # Create a horizontal layout for buttons
-            cols = st.columns(len(unique_docs))
-            for j, (title, doc) in enumerate(unique_docs.items()):
-                with cols[j]:
-                    if st.button(f"{title}", key=f"doc_button_{i}_{j}"):
-                        # Clear previous selections
-                        for k in range(len(unique_docs)):
-                            if k != j:
-                                st.session_state[f"show_doc_{i}_{k}"] = False
-                        # Set current selection
-                        st.session_state[f"show_doc_{i}_{j}"] = True
+    # Display the assistant's response
+    with st.chat_message("assistant"):
+        st.markdown(full_response)
 
-        # Display HTML content if the corresponding button was clicked
-        if message["role"] == "assistant" and "context" in st.session_state.get(f"message_{i}", {}):
-            for j, (title, doc) in enumerate(unique_docs.items()):
-                if st.session_state.get(f"show_doc_{i}_{j}", False):
-                    html_file_path = doc.metadata.get('source', '')
-                  
-                    if html_file_path:
-                        # Ensure the path is relative to the current working directory
-                        if not html_file_path.startswith('opm-reference-manual'):
-                            # remove everything before 'opm-reference-manual'
-                            html_file_path = 'opm-reference-manual' + html_file_path.split('opm-reference-manual')[1]
-                        try:
-                            with open(html_file_path, 'r', encoding='utf-8') as file:
-                                html_content = file.read()
-                            #st.components.v1.html(html_content, height=600, width=800, scrolling=True)
-                            st.html(html_content)
-                        except FileNotFoundError:
-                            st.error(f"HTML file not found: {html_file_path}")
-                    else:
-                        st.error("Source file path not available for this document.")
+    # update site
+    st.rerun()
