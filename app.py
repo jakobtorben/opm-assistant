@@ -132,8 +132,9 @@ for i, message in enumerate(st.session_state.messages):
                     for k in range(len(unique_docs)):
                         if k != j:
                             st.session_state[f"show_doc_{i}_{k}"] = False
-                    # Set current selection
-                    st.session_state[f"show_doc_{i}_{j}"] = True
+                    # Toggle the visibility state
+                    current_state = st.session_state.get(f"show_doc_{i}_{j}", False)
+                    st.session_state[f"show_doc_{i}_{j}"] = not current_state
 
     # Display HTML content if the corresponding button was clicked
     if message["role"] == "assistant" and "context" in st.session_state.get(f"message_{i}", {}):
