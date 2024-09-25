@@ -16,7 +16,7 @@ This is a chatbot application that uses RAG (Retrieval-Augmented Generation) to 
    ```
    pip install -r requirements.txt
    ```
-5. Create a `.env` file in the root directory and add your OpenAI API key:
+5. Optionally, for local testing, create a `.env` file in the root directory and add your OpenAI API key:
    ```
    OPENAI_API_KEY=your_api_key_here
    ```
@@ -26,9 +26,9 @@ This is a chatbot application that uses RAG (Retrieval-Augmented Generation) to 
 ### Option 1: Local Setup
 
 1. Ensure your virtual environment is activated
-2. Run the Chainlit app:
+2. Run the Streamlit app:
    ```
-   chainlit run app.py
+   streamlit run app.py
    ```
 3. Open the provided URL in your web browser
 
@@ -40,10 +40,11 @@ This is a chatbot application that uses RAG (Retrieval-Augmented Generation) to 
    ```
 2. Run the Docker container:
    ```
+   docker run -p 8501:8501 opm-assistant
+   ```
+3. Optionally, for local testing, create a `.env` file in the root directory and add your OpenAI API key:
+   ```
    docker run -p 8501:8501 -e OPENAI_API_KEY=your_api_key_here opm-assistant
    ```
+
 3. Open `http://localhost:8501` in your web browser
-
-## Note
-
-Make sure you have the necessary data in the `./chroma_langchain_db` directory for the vector store to function properly.
