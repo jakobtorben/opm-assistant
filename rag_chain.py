@@ -21,7 +21,7 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
 
 
 
-def create_conversational_rag_chain():
+def create_conversational_rag_chain(model):
 
     # Construct QA prompt from system prompt and chat history
     system_prompt = (
@@ -56,7 +56,7 @@ def create_conversational_rag_chain():
         ]
     )
     
-    llm = ChatOpenAI(model="gpt-4o-mini-2024-07-18", temperature=0)
+    llm = ChatOpenAI(model=model, temperature=0)
     embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 
 

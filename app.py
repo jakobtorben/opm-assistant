@@ -55,6 +55,13 @@ with st.sidebar:
     if st.button("Clear Chat History and Context", on_click=clear_chat):
         st.success("Chat history and custom context cleared!")
 
+    # Model selection
+    model = st.selectbox(
+        "Choose a model",
+        ("gpt-4o-mini", "gpt-4o"),
+        index=0
+    )
+
     # set the API key
 
     # check if the API key is in the environment variables
@@ -90,7 +97,7 @@ with st.sidebar:
 
 # Only create the conversational RAG chain if a valid API key is provided
 if api_key and is_api_key_valid(api_key):
-    conversational_rag_chain = create_conversational_rag_chain()
+    conversational_rag_chain = create_conversational_rag_chain(model=model)
 else:
     conversational_rag_chain = None
 
