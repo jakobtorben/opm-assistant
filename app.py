@@ -80,7 +80,7 @@ with st.sidebar:
 
     # File uploader
     uploaded_files = st.file_uploader("Upload a file",
-                                      type=['data', 'inc', 'sch', 'pdf', 'txt'],
+                                      type=['data', 'dbg', 'inc', 'sch', 'pdf', 'txt'],
                                       accept_multiple_files=True,
                                       label_visibility="collapsed",
                                       key=st.session_state["file_uploader_key"])
@@ -88,7 +88,7 @@ with st.sidebar:
         new_files_processed = False
         for uploaded_file in uploaded_files:
             if uploaded_file.name not in st.session_state.processed_files:
-                result = process_file(uploaded_file)
+                result = process_file(uploaded_file, st.session_state.session_id)
                 if result.content:
                     st.session_state.custom_context.append(result.content)
                 if result.data:
@@ -106,9 +106,9 @@ for i, message in enumerate(st.session_state.messages):
 
     # Check if this is an assistant message
     if message["role"] == "assistant":
-        # Check if the message contains "SGOF" and "plot"
+        # Check if the message contains "SGWFN" and "plot"
         if "SGWFN" in message["content"] and "plot" in message["content"]:
-            # Retrieve the SGOF data
+            # Retrieve the SGWFN data
             recent_sgwfn_data = st.session_state.data[0]
             if recent_sgwfn_data:
                 fig = plot_sgwfn_data(recent_sgwfn_data)
@@ -119,41 +119,43 @@ for i, message in enumerate(st.session_state.messages):
     # Check if this is an assistant message and has context
     if message["role"] == "assistant" and "context" in st.session_state.get(f"message_{i}", {}):
         context = st.session_state[f"message_{i}"]["context"]
-        unique_docs = {doc.metadata.get('title', f'Document {j+1}'): doc for j, doc in enumerate(context)}
+        keyword_docs = [doc for doc in context if 'opm-reference-manual' in doc.metadata.get('source', '')]
 
-        # Create a horizontal layout for buttons
-        cols = st.columns(len(unique_docs))
-        for j, (title, doc) in enumerate(unique_docs.items()):
-            with cols[j]:
-                if st.button(f"{title}", key=f"doc_button_{i}_{j}"):
-                    # Clear previous selections
-                    for k in range(len(unique_docs)):
-                        if k != j:
-                            st.session_state[f"show_doc_{i}_{k}"] = False
-                    # Toggle the visibility state
-                    current_state = st.session_state.get(f"show_doc_{i}_{j}", False)
-                    st.session_state[f"show_doc_{i}_{j}"] = not current_state
+        if keyword_docs:
+            unique_docs = {doc.metadata.get('title', f'Document {j+1}'): doc for j, doc in enumerate(keyword_docs)}
 
-    # Display HTML content if the corresponding button was clicked
-    if message["role"] == "assistant" and "context" in st.session_state.get(f"message_{i}", {}):
-        for j, (title, doc) in enumerate(unique_docs.items()):
-            if st.session_state.get(f"show_doc_{i}_{j}", False):
-                html_file_path = doc.metadata.get('source', '')
+            # Create a horizontal layout for buttons
+            cols = st.columns(len(unique_docs))
+            for j, (title, doc) in enumerate(unique_docs.items()):
+                with cols[j]:
+                    if st.button(f"{title}", key=f"doc_button_{i}_{j}"):
+                        # Clear previous selections
+                        for k in range(len(unique_docs)):
+                            if k != j:
+                                st.session_state[f"show_doc_{i}_{k}"] = False
+                        # Toggle the visibility state
+                        current_state = st.session_state.get(f"show_doc_{i}_{j}", False)
+                        st.session_state[f"show_doc_{i}_{j}"] = not current_state
 
-                if html_file_path:
-                    # Ensure the path is relative to the current working directory
-                    if not html_file_path.startswith('opm-reference-manual'):
-                        # remove everything before 'opm-reference-manual'
-                        html_file_path = 'opm-reference-manual' + html_file_path.split('opm-reference-manual')[1]
-                    try:
-                        with open(html_file_path, 'r', encoding='utf-8') as file:
-                            html_content = file.read()
-                        #st.components.v1.html(html_content, height=600, width=800, scrolling=True)
-                        st.html(html_content)
-                    except FileNotFoundError:
-                        st.error(f"HTML file not found: {html_file_path}")
-                else:
-                    st.error("Source file path not available for this document.")
+            # Display HTML content if the corresponding button was clicked
+            if message["role"] == "assistant" and "context" in st.session_state.get(f"message_{i}", {}):
+                for j, (title, doc) in enumerate(unique_docs.items()):
+                    if st.session_state.get(f"show_doc_{i}_{j}", False):
+                        html_file_path = doc.metadata.get('source', '')
+
+                        if html_file_path:
+                            # Ensure the path is relative to the current working directory
+                            if not html_file_path.startswith('opm-reference-manual'):
+                                # remove everything before 'opm-reference-manual'
+                                html_file_path = 'opm-reference-manual' + html_file_path.split('opm-reference-manual')[1]
+                            try:
+                                with open(html_file_path, 'r', encoding='utf-8') as file:
+                                    html_content = file.read()
+                                st.html(html_content)
+                            except FileNotFoundError:
+                                st.error(f"HTML file not found: {html_file_path}")
+                        else:
+                            st.error("Source file path not available for this document.")
 
 # Chat input
 if prompt := st.chat_input("How can I help you?"):
@@ -161,7 +163,7 @@ if prompt := st.chat_input("How can I help you?"):
         st.info("Please add your OpenAI API key in the sidebar to continue.")
         st.stop()
 
-    conversational_rag_chain = create_conversational_rag_chain(model=model, api_key=st.session_state.api_key)
+    conversational_rag_chain = create_conversational_rag_chain(model=model, api_key=st.session_state.api_key, session_id=st.session_state.session_id)
 
     # Display the user's message immediately
     with st.chat_message("user"):
