@@ -7,7 +7,7 @@ import uuid
 from process_file import plot_sgwfn_data
 
 st.set_page_config(layout="centered", page_title="OPM Assistant", page_icon="opm_logo_compact.png")
-
+KEYWORDS_TO_SHOW = 4
 
 # Initialize session state
 if 'session_id' not in st.session_state:
@@ -50,6 +50,13 @@ def is_api_key_valid(api_key):
     else:
         return True
 
+def render_html_file(html_file_path):
+    try:
+        with open(html_file_path, 'r', encoding='utf-8') as file:
+            html_content = file.read()
+        st.html(html_content)
+    except FileNotFoundError:
+        st.error(f"HTML file not found: {html_file_path}")
 
 with st.sidebar:
     st.image('opm_logo.png')
@@ -122,7 +129,7 @@ for i, message in enumerate(st.session_state.messages):
         keyword_docs = [doc for doc in context if 'opm-reference-manual' in doc.metadata.get('source', '')]
 
         if keyword_docs:
-            unique_docs = {doc.metadata.get('title', f'Document {j+1}'): doc for j, doc in enumerate(keyword_docs)}
+            unique_docs = {doc.metadata.get('title', f'Document {j+1}'): doc for j, doc in enumerate(keyword_docs[:KEYWORDS_TO_SHOW])}
 
             # Create a horizontal layout for buttons
             cols = st.columns(len(unique_docs))
@@ -133,29 +140,14 @@ for i, message in enumerate(st.session_state.messages):
                         for k in range(len(unique_docs)):
                             if k != j:
                                 st.session_state[f"show_doc_{i}_{k}"] = False
-                        # Toggle the visibility state
+                        # Toggle the visibility state for this document
                         current_state = st.session_state.get(f"show_doc_{i}_{j}", False)
                         st.session_state[f"show_doc_{i}_{j}"] = not current_state
 
-            # Display HTML content if the corresponding button was clicked
-            if message["role"] == "assistant" and "context" in st.session_state.get(f"message_{i}", {}):
-                for j, (title, doc) in enumerate(unique_docs.items()):
-                    if st.session_state.get(f"show_doc_{i}_{j}", False):
-                        html_file_path = doc.metadata.get('source', '')
-
-                        if html_file_path:
-                            # Ensure the path is relative to the current working directory
-                            if not html_file_path.startswith('opm-reference-manual'):
-                                # remove everything before 'opm-reference-manual'
-                                html_file_path = 'opm-reference-manual' + html_file_path.split('opm-reference-manual')[1]
-                            try:
-                                with open(html_file_path, 'r', encoding='utf-8') as file:
-                                    html_content = file.read()
-                                st.html(html_content)
-                            except FileNotFoundError:
-                                st.error(f"HTML file not found: {html_file_path}")
-                        else:
-                            st.error("Source file path not available for this document.")
+            for j, (title, doc) in enumerate(unique_docs.items()):
+                if st.session_state.get(f"show_doc_{i}_{j}", False):
+                    html_file_path = doc.metadata.get('source', '')
+                    render_html_file(html_file_path)
 
 # Chat input
 if prompt := st.chat_input("How can I help you?"):
