@@ -51,6 +51,10 @@ def is_api_key_valid(api_key):
         return True
 
 def render_html_file(html_file_path):
+    # Ensure the path is relative to the current working directory
+    if not html_file_path.startswith('opm-reference-manual'):
+        # remove everything before 'opm-reference-manual'
+        html_file_path = 'opm-reference-manual' + html_file_path.split('opm-reference-manual')[1]
     try:
         with open(html_file_path, 'r', encoding='utf-8') as file:
             html_content = file.read()
