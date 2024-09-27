@@ -159,7 +159,7 @@ if prompt := st.chat_input("How can I help you?"):
         st.info("Please add your OpenAI API key in the sidebar to continue.")
         st.stop()
 
-    conversational_rag_chain = create_conversational_rag_chain(model=model, api_key=st.session_state.api_key, session_id=st.session_state.session_id)
+    conversational_rag_chain = create_conversational_rag_chain(model=model, api_key=st.session_state.api_key)
 
     # Display the user's message immediately
     with st.chat_message("user"):

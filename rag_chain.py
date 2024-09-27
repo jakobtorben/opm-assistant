@@ -10,10 +10,7 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain.retrievers import MultiQueryRetriever
-from langchain.schema import BaseRetriever, Document
-from typing import List
-from pydantic import Field
+
 
 store = {}
 
@@ -22,7 +19,10 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
         store[session_id] = ChatMessageHistory()
     return store[session_id]
 
-def create_conversational_rag_chain(model, api_key, session_id):
+
+
+def create_conversational_rag_chain(model, api_key):
+
     # Construct QA prompt from system prompt and chat history
     system_prompt = (
         "You are an assistant for question-answering tasks to support reservoir engineers for reservoir simulation. "
@@ -55,67 +55,18 @@ def create_conversational_rag_chain(model, api_key, session_id):
             ("human", "{input}"),
         ]
     )
-
+    
     llm = ChatOpenAI(model=model, temperature=0, api_key=api_key)
     embeddings = OpenAIEmbeddings(model="text-embedding-ada-002", api_key=api_key)
 
-    # Create the KEYWORDS vector store
-    keywords_vector_store = Chroma(
+
+    vector_store = Chroma(
         collection_name="KEYWORDS",
         embedding_function=embeddings,
         persist_directory="./chroma_langchain_db",
     )
 
-    # Create the combined vector store
-    combined_collection_name = f"COMBINED_{session_id}"
-    combined_vector_store = Chroma(
-        collection_name=combined_collection_name,
-        embedding_function=embeddings,
-        persist_directory="./chroma_combined_db",
-    )
-
-    # Create a custom retriever that combines results from both vector stores
-    class CombinedRetriever(BaseRetriever):
-        keywords_retriever: BaseRetriever = Field(..., description="Retriever for keywords")
-        combined_retriever: BaseRetriever = Field(..., description="Retriever for combined search")
-
-        class Config:
-            arbitrary_types_allowed = True
-
-        def get_relevant_documents(self, query: str) -> List[Document]:
-            keywords_docs = self.keywords_retriever.invoke(query)
-            combined_docs = self.combined_retriever.invoke(query)
-
-            # Combine and deduplicate the results
-            all_docs = keywords_docs + combined_docs
-            unique_docs = list({doc.page_content: doc for doc in all_docs}.values())
-
-            return unique_docs
-
-        async def aget_relevant_documents(self, query: str) -> List[Document]:
-            keywords_docs = await self.keywords_retriever.ainvoke(query)
-            combined_docs = await self.combined_retriever.ainvoke(query)
-
-            # Combine and deduplicate the results
-            all_docs = keywords_docs + combined_docs
-            unique_docs = list({doc.page_content: doc for doc in all_docs}.values())
-
-            return unique_docs
-
-    keywords_retriever = keywords_vector_store.as_retriever()
-    combined_retriever = combined_vector_store.as_retriever()
-
-    # Create the combined retriever
-    combined_retriever = CombinedRetriever(
-        keywords_retriever=keywords_retriever,
-        combined_retriever=combined_retriever
-    )
-
-    # Create the MultiQueryRetriever using the combined retriever
-    retriever = MultiQueryRetriever.from_llm(
-        retriever=combined_retriever,
-        llm=ChatOpenAI(model=model, temperature=0, api_key=api_key)
-    )
+    retriever = vector_store.as_retriever()
 
     question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
 

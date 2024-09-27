@@ -10,8 +10,8 @@ from langchain_openai import OpenAIEmbeddings
 import streamlit as st
 
 # Define word count limits
-MAX_CONTEXT_WORDS = 1000  # for most files
-MAX_DATA_CONTEXT_WORDS = 5000  # for .data files (input decks)
+MAX_CONTEXT_WORDS = 10000  # for most files
+MAX_DATA_CONTEXT_WORDS = 10000  # for .data files (input decks)
 MAX_DATABASE_WORDS = 30000  # for database storage
 
 class FileProcessResult:
@@ -67,15 +67,16 @@ def process_text_file(content, file_extension, file_name, session_id):
     if word_count <= max_words:
         print(f"File with {word_count} words added to context")
         return FileProcessResult(add_to_context=True, content=content)
-    elif word_count <= MAX_DATABASE_WORDS:
-        chunks_added = add_to_database(content, file_name, session_id)
-        print(f"File with {word_count} words added to database in {chunks_added} chunks for retrieval")
-        return FileProcessResult(add_to_context=False, content=f"File {file_name} added to database for retrieval")
+    #elif word_count <= MAX_DATABASE_WORDS:
+    #    chunks_added = add_to_database(content, file_name, session_id)
+    #    print(f"File with {word_count} words added to database in {chunks_added} chunks for retrieval")
+    #    return FileProcessResult(add_to_context=False, content=f"File {file_name} added to database for retrieval")
     else:
-        truncated_content = ' '.join(content.split()[:MAX_DATABASE_WORDS])
-        chunks_added = add_to_database(truncated_content, file_name, session_id)
-        print(f"File truncated to {MAX_DATABASE_WORDS} words and added to database in {chunks_added} chunks")
-        return FileProcessResult(add_to_context=False, content=f"File {file_name} truncated and added to database for retrieval")
+        truncated_content = ' '.join(content.split()[:max_words])
+        #chunks_added = add_to_database(truncated_content, file_name, session_id)
+        #print(f"File truncated to {MAX_DATABASE_WORDS} words and added to database in {chunks_added} chunks")
+        print(f"File with {word_count} words added to context")
+        return FileProcessResult(add_to_context=True, content=truncated_content)
 
 def add_pdf_to_database(pages, session_id, file_name):
     embeddings = OpenAIEmbeddings(model="text-embedding-ada-002", api_key=st.session_state.api_key)
@@ -126,16 +127,19 @@ def process_pdf_file(file, session_id):
         if word_count <= MAX_CONTEXT_WORDS:
             print(f"PDF content with {word_count} words added to context")
             return FileProcessResult(add_to_context=True, content=content)
-        elif word_count <= MAX_DATABASE_WORDS:
-            chunks_added = add_pdf_to_database(pages, session_id, file.name)
-            print(f"PDF content with {word_count} words added to database in {chunks_added} chunks for retrieval")
-            return FileProcessResult(add_to_context=False, content=f"PDF file {file.name} added to database for retrieval")
+        #elif word_count <= MAX_DATABASE_WORDS:
+        #    chunks_added = add_pdf_to_database(pages, session_id, file.name)
+        #    print(f"PDF content with {word_count} words added to database in {chunks_added} chunks for retrieval")
+        #    return FileProcessResult(add_to_context=False, content=f"PDF file {file.name} added to database for retrieval")
         else:
             average_words_per_page = word_count / len(pages)
-            truncated_pages = pages[:int(MAX_DATABASE_WORDS // average_words_per_page)]
-            chunks_added = add_pdf_to_database(truncated_pages, session_id, file.name)
-            print(f"PDF content truncated to {MAX_DATABASE_WORDS} words and added to database in {chunks_added} chunks")
-            return FileProcessResult(add_to_context=False, content=f"PDF file {file.name} truncated and added to database for retrieval")
+            truncated_pages = pages[:int(MAX_CONTEXT_WORDS // average_words_per_page)]
+            #chunks_added = add_pdf_to_database(truncated_pages, session_id, file.name)
+            #print(f"PDF content truncated to {MAX_DATABASE_WORDS} words and added to database in {chunks_added} chunks")
+            #return FileProcessResult(add_to_context=False, content=f"PDF file {file.name} truncated and added to database for retrieval")
+            truncated_content = "\n".join([page.page_content for page in truncated_pages])
+            print(f"PDF content truncated to {MAX_CONTEXT_WORDS} words and added to context")
+            return FileProcessResult(add_to_context=True, content=truncated_content)
     finally:
         # Clean up the temporary file
         os.unlink(temp_file_path)
