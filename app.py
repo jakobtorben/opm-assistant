@@ -150,7 +150,9 @@ for i, message in enumerate(st.session_state.messages):
 
             for j, (title, doc) in enumerate(unique_docs.items()):
                 if st.session_state.get(f"show_doc_{i}_{j}", False):
-                    html_file_path = doc.metadata.get('source', '')
+                    file_path = doc.metadata.get('source', '')
+                    html_file_path = file_path.replace('.txt', '.html')
+                    html_file_path = html_file_path.replace('txt_parts', 'html_parts')
                     render_html_file(html_file_path)
 
 # Chat input

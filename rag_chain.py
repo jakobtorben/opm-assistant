@@ -57,11 +57,11 @@ def create_conversational_rag_chain(model, api_key):
     )
     
     llm = ChatOpenAI(model=model, temperature=0, api_key=api_key)
-    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002", api_key=api_key)
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small", api_key=api_key)
 
 
     vector_store = Chroma(
-        collection_name="KEYWORDS",
+        collection_name="KEYWORDS_cleaned",
         embedding_function=embeddings,
         persist_directory="./chroma_langchain_db",
     )
