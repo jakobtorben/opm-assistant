@@ -180,20 +180,23 @@ if prompt := st.chat_input("How can I help you?"):
         prompt = f"{custom_context}\n\n{prompt}"
         st.session_state.context_added = True
 
-    # Show a loading spinner while waiting for the response
-    with st.spinner("Thinking..."):
-        # Invoke the conversational RAG chain
-        response = conversational_rag_chain.invoke(
-            {"input": prompt},
-            {"configurable": {"session_id": st.session_state.session_id}}
-        )
-
-    full_response = response['answer']
-    context = response.get('context', [])
-
-    # Print the response and context for debugging
-    print(f"Assistant response: {full_response}")
-    print(f"Context: {context}")
+    # Display the assistant's response with streaming
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        full_response = ""
+        context = []
+        
+        for chunk in conversational_rag_chain.stream({
+            "input": prompt,
+            "configurable": {"session_id": st.session_state.session_id}
+        }, config={"configurable": {"session_id": st.session_state.session_id}}):
+            if 'answer' in chunk:
+                full_response += chunk['answer']
+                message_placeholder.markdown(full_response + "▌")
+            if 'context' in chunk:
+                context.extend(chunk['context'])
+        
+        message_placeholder.markdown(full_response)
 
     # Store the response and context in session state
     message_index = len(st.session_state.messages)
@@ -202,9 +205,9 @@ if prompt := st.chat_input("How can I help you?"):
     }
     st.session_state.messages.append({"role": "assistant", "content": full_response})
 
-    # Display the assistant's response
-    with st.chat_message("assistant"):
-        st.markdown(full_response)
+    # Print the response and context for debugging
+    print(f"Assistant response: {full_response}")
+    print(f"Context: {context}")
 
     # update site
     st.rerun()
