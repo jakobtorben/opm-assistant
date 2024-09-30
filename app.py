@@ -5,6 +5,7 @@ from process_file import process_file
 from rag_chain import create_conversational_rag_chain
 import uuid
 from process_file import plot_sgwfn_data
+import streamlit.components.v1 as components
 
 st.set_page_config(layout="centered", page_title="OPM Assistant", page_icon="opm_logo_compact.png")
 KEYWORDS_TO_SHOW = 4
@@ -58,7 +59,12 @@ def render_html_file(html_file_path):
     try:
         with open(html_file_path, 'r', encoding='utf-8') as file:
             html_content = file.read()
-        st.html(html_content)
+        # Create a container with fixed height and scrolling
+        components.html(
+            f"""{html_content}""",
+            height=420,
+            scrolling=True
+        )
     except FileNotFoundError:
         st.error(f"HTML file not found: {html_file_path}")
 
